@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Sign Up Page</title>
+    <link rel="stylesheet" href="mystyle.css">
+    <style>
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Cute Pet Home</h1>
+    </div>
+    
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="Services.html">Services</a>
+        <a href="booking.html">Booking</a>
+        <a href="loginAndSignUp.html">Login/Register</a>
+    </nav>
+    
+    <div class="login-form">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <button type="button" onclick="login()">Login</button>
+        </form>
+    </div>
+    
+    <div class="registration-form">
+        <h2>Register</h2>
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="registerUsername">Username</label>
+                <input type="text" id="registerUsername" name="username" required>
+                <span class="error-message" id="usernameError" style="display:none;">Please enter a valid username.</span>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+                <span class="error-message" id="emailError" style="display:none;">Please enter a valid email address.</span>
+            </div>
+            <div class="form-group">
+                <label for="registerPassword">Password</label>
+                <input type="password" id="registerPassword" name="password" required>
+                <span class="error-message" id="passwordError" style="display:none;">Password must be at least 6 characters long.</span>
+            </div>
+            <div class="form-group">
+                <button type="submit">Register</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="login.js"></script>
+    <script>
+        function setupRegistrationListener() {
+            const registrationForm = document.getElementById('registrationForm');
+            registrationForm.removeEventListener('submit', handleRegistration);
+            registrationForm.addEventListener('submit', handleRegistration);
+        }
+    
+        function handleRegistration(event) {
+            event.preventDefault();  
+    
+        
+    
+            // 获取用户输入的数据
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('registerPassword').value;
+    
+            let isValid = true;
+    
+            if (isValid) {
+                // 发送注册请求到服务器
+                fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, email, password })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            throw new Error(errorData.message);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert('Registration successful!');
+                    } else {
+                        alert('Registration failed: ' + data.message);
+                    }
+                })
+                .catch(err => {
+                    console.error('Registration error:', err);
+                    alert('Registration failed: ' + err.message);
+                });
+            }
+        }
+    
+        setupRegistrationListener();
+    </script>
+    
+    
+    <footer>
+        <p>&copy; 2024 Cute Pet Home. All rights reserved.</p>
+    </footer>
+</body>
+</html>
